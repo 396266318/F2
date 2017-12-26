@@ -70,9 +70,9 @@ class Myunit(unittest.TestCase):
             allow = self.devices(textContains="允许")
             total_allow = self.devices(textContains="始终允许")
             if allow.exists is True:
-                self.devices.watcher("允许").when(text="允许").when(text="允许").click(text="允许")
+                self.devices.watcher("允许").when(text="允许").click(text="允许")
             if total_allow.exists is True:
-                self.devices.watcher("始终允许").when(text="始终允许").when(text="始终允许").click(text="始终允许")
+                self.devices.watcher("始终允许").when(text="始终允许").click(text="始终允许")
 
     def tearDown(self):
         self.devices.set_fastinput_ime(False)  # 关闭(fastinput)输入法
