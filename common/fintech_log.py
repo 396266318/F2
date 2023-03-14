@@ -9,13 +9,10 @@ import time
 class Logs(object):
     def __init__(self):
         self.logger = logging.getLogger("")
-        # 创建文件目录
-        logs_dir = 'logs'
-        if not os.path.exists(logs_dir) or not os.path.isdir(logs_dir):
-            os.mkdir(logs_dir)
+        
+        logs_dir = "D:\\Cloud\\tools\\logs\\"
         # 修改log保存位置
-        timestamp = time.strftime("%Y-%m-%d", time.localtime())
-        logfilename = f'{timestamp}.log'
+        logfilename = f'{time.strftime("%Y-%m-%d-%H", time.localtime())}.log'
         logfilepath = os.path.join(logs_dir, logfilename)
         FileHandler = logging.handlers.RotatingFileHandler(filename=logfilepath,
                                                            maxBytes=1024 * 1024 * 50,
