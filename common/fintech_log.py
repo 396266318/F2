@@ -1,64 +1,47 @@
 #coding=utf-8
 
 import logging
-import time
+import logging.handlers
 import os
+import time
 
 
-# log_path = os.getcwd()        # 输出到当前文件夹
-log_path = 'D:/pp100/FintechDemo/Log/'
-
-
-class fintechLog(logging.Logger):
-
+class Logs(object):
     def __init__(self):
-        self.logname = os.path.join(log_path, '{0}.log'.format(time.strftime('%Y-%m-%d')))
-        print(self.logname)
+        self.logger = logging.getLogger("")
+        # 创建文件目录
+        logs_dir = 'logs'
+        if not os.path.exists(logs_dir) or not os.path.isdir(logs_dir):
+            os.mkdir(logs_dir)
+        # 修改log保存位置
+        timestamp = time.strftime("%Y-%m-%d", time.localtime())
+        logfilename = f'{timestamp}.log'
+        logfilepath = os.path.join(logs_dir, logfilename)
+        FileHandler = logging.handlers.RotatingFileHandler(filename=logfilepath,
+                                                           maxBytes=1024 * 1024 * 50,
+                                                           backupCount=5,
+                                                           encoding='utf-8')
+        # 设置输出格式
+        formatter = logging.Formatter('%(asctime)s - %(process)d-%(threadName)s - %(levelname)s: %(message)s')
 
-    def __printconsole(self, level, message):
-        # 创建一个logger
-        logger = logging.getLogger()
-        logger.setLevel(logging.DEBUG)
-        # 创建一个handler，用于写入日志文件
-        fh = logging.FileHandler(self.logname, 'a', encoding='utf-8')
-        fh.setLevel(logging.DEBUG)
-        # 再创建一个handler，用于输出到控制台
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-        # 定义handler的输出格式
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        fh.setFormatter(formatter)
-        ch.setFormatter(formatter)
-        # 给logger添加handler
-        logger.addHandler(fh)
-        logger.addHandler(ch)
-        # 记录一条日志
-        if level == 'info':
-            logger.info(message)
-        elif level == 'debug':
-            logger.debug(message)
-        elif level == 'warning':
-            logger.warning(message)
-        elif level == 'error':
-            logger.error(message)
-        logger.removeHandler(ch)
-        logger.removeHandler(fh)
-        # 关闭打开的文件
-        fh.close()
-
-    def debug(self, message):
-        self.__printconsole('debug', message)
+        FileHandler.setFormatter(formatter)
+        # 控制台句柄
+        console = logging.StreamHandler()
+        console.setLevel(logging.NOTSET)
+        console.setFormatter(formatter)
+        # 添加内容到日志句柄中
+        self.logger.addHandler(FileHandler)
+        self.logger.addHandler(console)
+        self.logger.setLevel(logging.NOTSET)
 
     def info(self, message):
-        self.__printconsole('info', message)
+        self.logger.info(message)
 
-    def warning(self, message):
-        self.__printconsole('warning', message)
+    def debug(self, message):
+        self.logger.debug(message)
 
-    def error(self, message):
-        self.__printconsole('error', message)
 
 if __name__ == "__main__":
-    log = fintechLog()
+    log = Logs()
 #     log.info("---记录开始---")
 #     log.info("---记录结束---")
